@@ -9,31 +9,30 @@ import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import Home from "./pages/Home";
 
-// NEW: import your extracted components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 export default function App() {
   const location = useLocation();
 
-  // pages where you don't want the site chrome
-  const hideChromeOn = ["/login", "/register"];
+  // Keep your chrome logic as-is
+  const hideChromeOn = ["/login", "/register", "/dashboard"];
   const hideChrome = hideChromeOn.includes(location.pathname);
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navbar */}
       {!hideChrome && <Navbar />}
 
-      {/* Main content */}
       <main className={hideChrome ? "" : "p-4 flex-1"}>
         <Routes>
-          {/* Public */}
+          {/* PUBLIC: Home is always at "/" */}
           <Route path="/" element={<Home />} />
+
+          {/* PUBLIC: Auth pages */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          {/* Auth-required */}
+          {/* PRIVATE: needs auth */}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/appointments" element={<Appointments />} />
@@ -41,17 +40,16 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
           </Route>
 
-          {/* Admin-only */}
+          {/* ADMIN-ONLY */}
           <Route element={<ProtectedRoute roles={["admin"]} />}>
             <Route path="/admin" element={<Admin />} />
           </Route>
 
-          {/* Fallback */}
+          {/* 404 → Home */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
-
-      {/* Footer */}
+      
       {!hideChrome && <Footer />}
     </div>
   );

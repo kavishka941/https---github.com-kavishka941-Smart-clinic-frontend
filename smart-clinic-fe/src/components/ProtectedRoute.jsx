@@ -1,13 +1,12 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
 export default function ProtectedRoute({ roles }) {
   const { user, ready } = useAuth();
-  if (!ready) return null; // or a spinner
-  if (!user) return <Navigate to="/login" replace />;
+  const location = useLocation();
 
-  if (roles?.length && !roles.includes(user.role)) {
-    return <Navigate to="/" replace />;
-  }
+  if (!ready) return null;
+  if (!user) return <Navigate to="/login" state={{ from: location }} replace />;
+  if (roles?.length && !roles.includes(user.role)) return <Navigate to="/" replace />;
   return <Outlet />;
 }
