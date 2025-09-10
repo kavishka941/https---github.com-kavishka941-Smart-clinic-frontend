@@ -1,18 +1,28 @@
 import { useForm } from "react-hook-form";
 import { useAuth } from "../auth/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
+import "../styles/Register.css";
+
+// ✅ import assets (more reliable than "/src/..." paths)
+import heroImg from "../assets/register.jpg";
+import logoImg from "../assets/nawalokalogo.png";
 
 export default function Register() {
-  const { register: reg, handleSubmit, formState: { errors } } = useForm({
+  const {
+    register: reg,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       name: "",
       email: "",
       phone: "",
       password: "",
-      role: "patient", // sensible default
+      role: "patient",
     },
   });
+
   const { register: doRegister, login } = useAuth();
   const [err, setErr] = useState("");
   const nav = useNavigate();
@@ -20,74 +30,110 @@ export default function Register() {
   const onSubmit = async (data) => {
     try {
       setErr("");
-      // Sends { name, email, phone, password, role }
       await doRegister(data);
       await login({ email: data.email, password: data.password });
-      nav("/");
+      nav("/dashboard");
     } catch (e) {
-      setErr(e.response?.data?.message || "Registration failed");
+      setErr(e?.response?.data?.message || "Registration failed");
     }
   };
 
   return (
-    <div className="max-w-sm mx-auto">
-      <h1 className="text-2xl mb-4">Register</h1>
-      {err && <p className="text-red-600 mb-2">{err}</p>}
-
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <div>
-          <input className="input" placeholder="Name"
-            {...reg("name", { required: "Name is required" })}
-          />
-          {errors.name && <p className="text-red-600 text-sm">{errors.name.message}</p>}
+    <div className="register-container">
+      {/* LEFT: image + logo (desktop only) */}
+      <div className="register-left">
+        <img
+          src={heroImg}
+          alt="Healthcare professionals"
+          className="register-hero"
+        />
+        <div className="register-logo-card">
+          <img src={logoImg} alt="Nawaloka Hospitals PLC" className="register-logo" />
         </div>
+      </div>
 
-        <div>
-          <input className="input" placeholder="Email"
-            type="email"
-            {...reg("email", { required: "Email is required" })}
-          />
-          {errors.email && <p className="text-red-600 text-sm">{errors.email.message}</p>}
+      {/* RIGHT: heading + form */}
+      <div className="register-right">
+        <div className="register-form-wrapper">
+          {/* ✅ New title */}
+          <h1 className="register-title">Register for your visit</h1>
+          {/* (Optional subtext)
+          <p className="register-subtitle">
+            Create your patient account to book appointments and manage your visits.
+          </p>
+          */}
+
+          {err && <p className="error-msg">{err}</p>}
+
+          <form onSubmit={handleSubmit(onSubmit)} className="register-form">
+            {/* Full Name */}
+            <div className="form-group">
+              <label className="form-label">Full Name</label>
+              <input
+                type="text"
+                placeholder="Enter your name"
+                className="form-input"
+                {...reg("name", { required: "Full name is required" })}
+              />
+              {errors.name && <p className="error-msg">{errors.name.message}</p>}
+            </div>
+
+            {/* Email */}
+            <div className="form-group">
+              <label className="form-label">Email</label>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                className="form-input"
+                {...reg("email", { required: "Email is required" })}
+              />
+              {errors.email && <p className="error-msg">{errors.email.message}</p>}
+            </div>
+
+            {/* Mobile Number */}
+            <div className="form-group">
+              <label className="form-label">Mobile Number</label>
+              <input
+                type="tel"
+                placeholder="Enter your mobile number"
+                className="form-input"
+                {...reg("phone", {
+                  required: "Mobile number is required",
+                  pattern: {
+                    value: /^[0-9+\-\s()]{6,20}$/,
+                    message: "Enter a valid phone number",
+                  },
+                })}
+              />
+              {errors.phone && <p className="error-msg">{errors.phone.message}</p>}
+            </div>
+
+            {/* Password */}
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input
+                type="password"
+                placeholder="Create a password"
+                className="form-input"
+                {...reg("password", {
+                  required: "Password is required",
+                  minLength: { value: 6, message: "Min 6 characters" },
+                })}
+              />
+              {errors.password && <p className="error-msg">{errors.password.message}</p>}
+            </div>
+
+            {/* hidden default role */}
+            <input type="hidden" {...reg("role")} value="patient" readOnly />
+
+            <button type="submit" className="register-btn">Sign up</button>
+          </form>
+
+          <p className="signin-link">
+            Already have an account? <Link to="/login">Sign in</Link>
+          </p>
         </div>
-
-        <div>
-          <input className="input" placeholder="Phone"
-            {...reg("phone", {
-              // optional: make it required if you want
-              // required: "Phone is required",
-              pattern: {
-                value: /^[0-9+\-\s()]{6,20}$/,
-                message: "Enter a valid phone number",
-              },
-            })}
-          />
-          {errors.phone && <p className="text-red-600 text-sm">{errors.phone.message}</p>}
-        </div>
-
-        <div>
-          <select className="input"
-            {...reg("role", { required: "Role is required" })}
-          >
-            <option value="patient">Patient</option>
-            <option value="doctor">Doctor</option>
-            <option value="staff">Staff</option>
-            <option value="admin">Admin</option>
-          </select>
-          {errors.role && <p className="text-red-600 text-sm">{errors.role.message}</p>}
-        </div>
-
-        <div>
-          <input className="input" type="password" placeholder="Password"
-            {...reg("password", {
-              required: "Password is required",
-              minLength: { value: 6, message: "Min 6 characters" },
-            })}
-          />
-          {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
-        </div>
-
-        <button className="btn w-full">Create account</button>
-      </form>
+      </div>
     </div>
   );
 }

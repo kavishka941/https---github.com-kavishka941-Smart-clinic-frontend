@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../auth/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
+import "../styles/login.css"; // fixed path
+import loginImage from "../assets/loginpage.jpg"; // fixed path
 
 export default function Login() {
   const { register, handleSubmit } = useForm();
@@ -20,17 +22,48 @@ export default function Login() {
   };
 
   return (
-    <div className="max-w-sm mx-auto">
-      <h1 className="text-2xl mb-4">Login</h1>
-      {err && <p className="text-red-600 mb-2">{err}</p>}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-        <input className="input" placeholder="Email" {...register("email")} />
-        <input className="input" type="password" placeholder="Password" {...register("password")} />
-        <button className="btn">Login</button>
-      </form>
-      <p className="mt-2 text-sm">
-        No account? <Link className="text-blue-600" to="/register">Register</Link>
-      </p>
+    <div className="login-container">
+      {/* Left Form Section */}
+      <div className="login-form-section">
+  <div className="login-form-wrapper">
+    <h1 className="login-title">Log in</h1>
+    {err && <p className="login-error">{err}</p>}
+    <form onSubmit={handleSubmit(onSubmit)} className="login-form">
+      <label>Email</label>
+      <input
+        type="email"
+        placeholder="Enter your email"
+        {...register("email")}
+        required
+      />
+      <label>Password</label>
+      <input
+        type="password"
+        placeholder="Create a password"
+        {...register("password")}
+        required
+      />
+      <div className="login-extra">
+        <Link to="/forgot-password" className="forgot-link">
+          Forgot Password ?
+        </Link>
+      </div>
+      <button type="submit" className="login-btn">Log in</button>
+    </form>
+    <p className="signup-text">
+      Don’t have an account?{" "}
+      <Link className="signup-link" to="/register">
+        Sign up
+      </Link>
+    </p>
+  </div>
+</div>
+
+
+      {/* Right Image Section */}
+      <div className="login-image-section">
+        <img src={loginImage} alt="Doctors walking" />
+      </div>
     </div>
   );
 }

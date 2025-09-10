@@ -1,0 +1,135 @@
+/* Layout: 1 column on mobile, 2 columns on desktop */
+.register-container {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr; /* mobile: only form */
+  background: #fff;
+}
+
+@media (min-width: 1024px) {
+  .register-container {
+    grid-template-columns: 1fr 1fr; /* desktop split 50/50 */
+  }
+}
+
+/* LEFT column */
+.register-left {
+  position: relative;
+  display: none; /* hide image on mobile */
+}
+@media (min-width: 1024px) {
+  .register-left {
+    display: block;
+  }
+}
+.register-hero {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.register-logo-card {
+  position: absolute;
+  top: 2rem;
+  left: 2rem;
+  background: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+.register-logo {
+  width: 150px;
+  height: auto;
+}
+
+/* RIGHT column (form + title) */
+.register-right {
+  display: flex;
+  align-items: center;     /* vertical centering */
+  justify-content: center; /* horizontal centering */
+  padding: 2rem;
+}
+
+.register-form-wrapper {
+  width: 100%;
+  max-width: 420px; /* keep the form nice and narrow */
+}
+
+/* ✅ Title & optional subtitle */
+.register-title {
+
+  font-size: 2rem;     /* ~32px */
+  line-height: 1.15;
+  font-weight: 700;
+  margin: 0 0 1rem 0;  /* space below title */
+  color: #1A908F;
+}
+
+.register-subtitle {
+  margin: 0 0 1.25rem 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+/* Form controls */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.form-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #374151;
+}
+.form-input {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.95rem;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #000;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.4);
+}
+
+/* Submit button */
+.register-btn {
+  margin: 0.5rem auto 0 auto;   /* top margin + auto left/right = center */
+  display: block;               /* ensure it behaves like a block */
+  width: 220px;
+  background: #000;
+  color: #fff;
+  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.register-btn:hover {
+  background: #1A908F;
+}
+
+/* Errors & sign-in link */
+.error-msg {
+  font-size: 0.8rem;
+  color: #dc2626;
+}
+.signin-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  color: #4b5563;
+}
+.signin-link a {
+  color: #000;
+  text-decoration: underline;
+}
