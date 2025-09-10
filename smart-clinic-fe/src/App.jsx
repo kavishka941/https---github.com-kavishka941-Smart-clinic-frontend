@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, Link, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -8,34 +8,25 @@ import Prescription from "./pages/Prescription";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
 import Home from "./pages/Home";
-import { useAuth } from "./auth/AuthContext";
 
-function Navbar() {
-  const { user, logout } = useAuth();
-  return (
-    <nav className="p-4 border-b flex gap-4">
-      <Link to="/">Home</Link>
-      {user && <Link to="/dashboard">Dashboard</Link>}
-      {user && <Link to="/appointments">Appointments</Link>}
-      {user && <Link to="/profile">Profile</Link>}
-      {user?.role === "admin" && <Link to="/admin">Admin</Link>}
-      <div className="ml-auto">
-        {user ? <button onClick={logout}>Logout</button> : <Link to="/login">Login</Link>}
-      </div>
-    </nav>
-  );
-}
+// NEW: import your extracted components
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 export default function App() {
   const location = useLocation();
-  const hideNavbarOn = ["/login", "/register"];
-  const hideNavbar = hideNavbarOn.includes(location.pathname);
+
+  // pages where you don't want the site chrome
+  const hideChromeOn = ["/login", "/register"];
+  const hideChrome = hideChromeOn.includes(location.pathname);
 
   return (
-    <div className="min-h-screen">
-      {!hideNavbar && <Navbar />}
+    <div className="min-h-screen flex flex-col">
+      {/* Navbar */}
+      {!hideChrome && <Navbar />}
 
-      <div className={hideNavbar ? "" : "p-4"}>
+      {/* Main content */}
+      <main className={hideChrome ? "" : "p-4 flex-1"}>
         <Routes>
           {/* Public */}
           <Route path="/" element={<Home />} />
@@ -58,7 +49,10 @@ export default function App() {
           {/* Fallback */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </div>
+      </main>
+
+      {/* Footer */}
+      {!hideChrome && <Footer />}
     </div>
   );
 }
